@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Center - Adata Dashboard (Futuristic Mode)</title>
+    <title>Seller Center - Adata Dashboard (Volcanic Dark)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* --- FUTURISTIC MINIMALISM THEME --- */
+        /* --- VOLCANIC DARK THEME --- */
         :root {
-            --bg-dark: #10101a;
-            --bg-light: #1a1a2e;
-            --accent-core: #7d48cc;
-            --neon-highlight: #b05bff;
+            --bg-dark: #000000;
+            --bg-light: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --accent-core: #ff3d00; /* Orange Red */
+            --neon-highlight: #ff6e40;
             --text-body: rgba(255, 255, 255, 0.9);
-            --text-label: rgba(255, 255, 255, 0.6);
+            --text-label: rgba(255, 255, 255, 0.5);
+            --text-muted: #888888;
         }
 
         body {
-            background: radial-gradient(circle at 50% 50%, var(--bg-light), var(--bg-dark) 100%);
+            background: var(--bg-light);
+            background: radial-gradient(circle at top center, var(--bg-light), var(--bg-dark) 100%);
             color: var(--text-body);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
@@ -30,55 +34,62 @@
         .title-section h2 {
             font-weight: 800;
             letter-spacing: -1.5px;
-            background: linear-gradient(135deg, #fff 30%, #cdabfd 70%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff;
+        }
+
+        .title-section h2 span {
+            color: var(--accent-core);
         }
 
         .sub-teks { color: var(--text-label); }
 
+        /* Flat Dark Card */
         .glass-card {
-            background: rgba(26, 26, 46, 0.7); 
-            backdrop-filter: none;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
             padding: 40px; 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             margin-bottom: 20px;
-            transition: border-color 0.3s;
         }
-        .glass-card:hover { border-color: rgba(255, 255, 255, 0.08); }
 
-        .section-title { border-left: 4px solid var(--neon-highlight); padding-left: 15px; margin-bottom: 30px; font-weight: 800; }
+        .section-title { 
+            border-left: 4px solid var(--accent-core); 
+            padding-left: 15px; 
+            margin-bottom: 30px; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
         .form-label { 
-            font-weight: 500; 
+            font-weight: 600; 
             color: var(--text-label); 
-            font-size: 0.85rem; 
-            margin-bottom: 10px;
+            font-size: 0.8rem; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
             margin-left: 2px;
         }
 
         .form-control, .form-select {
-            background: rgba(16, 16, 26, 0.8) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background: #0a0a0a !important;
+            border: 1px solid var(--border-color) !important;
             color: var(--text-body) !important;
-            border-radius: 12px;
-            padding: 16px 20px;
-            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border-radius: 8px;
+            padding: 14px 18px;
+            transition: all 0.2s ease-in-out;
             box-shadow: none;
-            letter-spacing: -0.2px;
         }
 
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.3) !important;
+            color: var(--text-muted) !important;
             font-size: 0.9rem;
         }
 
         .form-control:focus {
-            background: rgba(16, 16, 26, 0.9) !important;
-            border-color: rgba(255, 255, 255, 0.15) !important;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--accent-core) !important;
+            box-shadow: 0 0 0 2px rgba(255, 61, 0, 0.2) !important;
             outline: none;
         }
 
@@ -86,50 +97,46 @@
             background: linear-gradient(135deg, var(--accent-core), var(--neon-highlight));
             border: none;
             color: white;
-            padding: 20px 0; 
-            border-radius: 14px;
-            font-weight: 700;
+            padding: 18px 0; 
+            border-radius: 8px;
+            font-weight: 800;
             margin-top: 20px;
-            box-shadow: 0 8px 30px rgba(125, 72, 204, 0.3);
-            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
+            transition: all 0.2s;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             width: 100%;
         }
 
         .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(125, 72, 204, 0.4);
-            filter: brightness(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 61, 0, 0.5);
+            filter: brightness(1.1);
         }
 
         .form-switch { margin-bottom: 25px; margin-top: 5px; }
+        .form-check-input:checked {
+            background-color: var(--accent-core);
+            border-color: var(--accent-core);
+        }
 
         .inventory-list { max-height: 800px; overflow-y: auto; background: none; border: none; padding: 10px 0; }
 
-        .inventory-list .card {
-            background: rgba(26, 26, 46, 0.6) !important;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            transition: transform 0.3s;
-            margin-bottom: 10px;
-        }
-        .inventory-list .card:hover {
-            transform: translateX(5px);
-            border-color: rgba(255, 255, 255, 0.08);
-        }
-        .inventory-list .card h6 { font-size: 0.95rem; }
-        .inventory-list .card small { color: var(--text-label) !important; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <div class="container-fluid py-4">
+    <div class="title-section mb-4 text-center text-lg-start">
+        <h2>Adata <span>Dashboard</span></h2>
+        <p class="sub-teks">Seller Center Control Panel.</p>
+    </div>
+
     <div class="row">
         <div class="col-lg-7">
             <form id="productForm" class="glass-card">
-                <h4 class="section-title">TAMBAH PRODUK BARU (SELLER MODE)</h4>
+                <h5 class="section-title">Tambah Produk</h5>
                 
                 <div class="row">
                     <div class="col-md-8">
@@ -142,50 +149,50 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-md-4">
                         <label class="form-label">Harga Jual (Rp)</label>
-                        <input type="number" id="harga" class="form-control price-input" placeholder="0" required>
+                        <input type="number" id="harga" class="form-control" placeholder="0" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Harga Coret (Promo)</label>
-                        <input type="number" id="harga_coret" class="form-control price-input" placeholder="0">
+                        <label class="form-label">Harga Coret</label>
+                        <input type="number" id="harga_coret" class="form-control" placeholder="0">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Stok</label>
-                        <input type="number" id="stok" class="form-control stock-input" placeholder="0" required>
+                        <input type="number" id="stok" class="form-control" placeholder="0" required>
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-md-4">
-                        <label class="form-label">Kategori Produk</label>
-                        <input type="text" id="kategori" class="form-control" placeholder="Ketik kategori produk" required>
+                        <label class="form-label">Kategori</label>
+                        <input type="text" id="kategori" class="form-control" placeholder="Ketik kategori" required>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Brand</label>
                         <input type="text" id="brand" class="form-control" placeholder="Merk produk">
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Berat (Gram)</label>
+                        <label class="form-label">Berat (Gr)</label>
                         <input type="number" id="berat_gram" class="form-control" placeholder="Contoh: 500">
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">URL Foto Produk (Paste Link Image)</label>
+                <div class="mt-3">
+                    <label class="form-label">URL Foto Produk</label>
                     <input type="text" id="image_url" class="form-control" placeholder="https://image-hosting.com/foto.jpg">
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Deskripsi Produk</label>
+                <div class="mt-3">
+                    <label class="form-label">Deskripsi</label>
                     <textarea id="deskripsi" class="form-control" rows="3" placeholder="Jelaskan detail material, ukuran, dll..."></textarea>
                 </div>
 
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-md-6">
-                        <label class="form-label">Data Varian (Format JSON)</label>
-                        <textarea id="varian" class="form-control" rows="2" placeholder='{"warna": ["hitam", "putih"], "size": ["L", "XL"]}'></textarea>
+                        <label class="form-label">Data Varian (JSON)</label>
+                        <textarea id="varian" class="form-control" rows="2" placeholder='{"warna": ["hitam"], "size": ["L"]}'></textarea>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">Rating</label>
@@ -201,20 +208,20 @@
                     </div>
                 </div>
 
-                <div class="form-check form-switch mt-2">
+                <div class="form-check form-switch mt-4">
                     <input class="form-check-input" type="checkbox" id="is_active" checked>
-                    <label class="form-check-label">Tampilkan Produk ke Pembeli</label>
+                    <label class="form-check-label text-white" style="font-size: 0.9rem;">Tampilkan Produk ke Pembeli</label>
                 </div>
 
-                <button type="submit" id="btnUpload" class="btn-primary">UPLOAD KE DATABASE</button>
+                <button type="submit" id="btnUpload" class="btn-primary">Upload ke Database</button>
             </form>
         </div>
 
         <div class="col-lg-5">
             <div class="glass-card">
-                <div class="d-flex justify-content-between mb-4 mt-2">
-                    <h5 class="fw-bold">Total Barang: <span id="val-total" class="text-info">0</span></h5>
-                    <button class="btn btn-sm btn-outline-light border-0" style="background: rgba(255,255,255,0.05)" onclick="loadData()">Refresh</button>
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="fw-bold m-0" style="color: var(--accent-core);">Total Barang: <span id="val-total" class="text-white">0</span></h5>
+                    <button class="btn btn-sm btn-outline-light border-1" style="border-color: var(--border-color); color: var(--text-label);" onclick="loadData()">Refresh</button>
                 </div>
                 <div id="listBarang" class="inventory-list">
                     <p class="text-muted">Loading data server...</p>
@@ -231,11 +238,10 @@
     const supabaseKey = 'sb_publishable_Wc70ySWSpeotdvEDN4UIaQ_VxNzY8J0';
     const db = createClient(supabaseUrl, supabaseKey);
 
-    // Fungsi narik data (SAFE MODE tanpa filter order biar ga crash kalau kolom created_at ilang)
+    // Fungsi narik data (SAFE MODE)
     async function loadData() {
         const { data, error } = await db.from('inventory').select('*');
         
-        // Debugger: Munculin pop up kalau ada error narik data
         if (error) {
             alert("GAGAL NARIK DATA SERVER: " + error.message);
             return console.error(error);
@@ -245,16 +251,26 @@
         document.getElementById('val-total').innerText = data.length;
 
         listContainer.innerHTML = data.length ? '' : '<p class="text-muted">Database kosong.</p>';
+        
+        // Render List Barang dengan Desain Flat Dark & Orange Accent
         data.forEach(item => {
             listContainer.innerHTML += `
-            <div class="card bg-dark mb-2 p-3 border-secondary">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div style="font-size: 0.85rem;">
-                        <div class="fw-bold text-info">${item.sku || 'NO-SKU'}</div>
-                        <div class="text-white">${item.nama}</div>
-                        <div class="text-muted">Rp ${Number(item.harga).toLocaleString()} | Stok: ${item.stok} | Cat: ${item.kategori}</div>
+            <div class="card mb-3 p-3" style="background: #141414; border: 1px solid #333; border-radius: 10px;">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span class="badge mb-2" style="background: rgba(255, 61, 0, 0.1); color: #ff6e40; border: 1px solid rgba(255, 61, 0, 0.3); font-weight: 600; letter-spacing: 0.5px;">
+                            ${item.sku || 'NO-SKU'}
+                        </span>
+                        <h6 class="text-white fw-bold mb-1" style="font-size: 1.05rem;">${item.nama}</h6>
+                        <div style="color: #888; font-size: 0.85rem; margin-top: 6px;">
+                            <span style="color: #ff6e40; font-weight: 700; font-size: 0.95rem;">Rp ${Number(item.harga).toLocaleString('id-ID')}</span> 
+                            <br>
+                            <span class="mt-1 d-inline-block">Stok: <span class="text-white">${item.stok}</span> <span class="mx-1">•</span> Kategori: <span class="text-white">${item.kategori}</span></span>
+                        </div>
                     </div>
-                    <button class="btn btn-sm btn-danger" onclick="hapusBarang('${item.id}')">Del</button>
+                    <button class="btn btn-sm" style="background: #2a0a0a; color: #ff4444; border: 1px solid #551111; border-radius: 6px; font-weight: 600; padding: 4px 10px; transition: 0.2s;" onclick="hapusBarang('${item.id}')" onmouseover="this.style.background='#441111'" onmouseout="this.style.background='#2a0a0a'">
+                        Hapus
+                    </button>
                 </div>
             </div>`;
         });
@@ -299,7 +315,7 @@
     // Handle Delete Barang
     async function hapusBarang(id) {
         if (!id || id === 'undefined') {
-            alert("Error: ID barang tidak ditemukan. Cek kolom 'id' di Supabase lu.");
+            alert("Error: ID barang tidak ditemukan.");
             return;
         }
 
