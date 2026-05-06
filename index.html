@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Center - Adata Dashboard (Futuristic Mode)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* --- FUTURISTIC MINIMALISM THEME --- */
+        :root {
+            --bg-dark: #10101a;
+            --bg-light: #1a1a2e;
+            --accent-core: #7d48cc;
+            --neon-highlight: #b05bff;
+            --text-body: rgba(255, 255, 255, 0.9);
+            --text-label: rgba(255, 255, 255, 0.6);
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 50%, var(--bg-light), var(--bg-dark) 100%);
+            color: var(--text-body);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            padding: 30px;
+            letter-spacing: -0.2px;
+        }
+
+        /* Tipografi baru */
+        h2, h4, h5, h6 { font-weight: 600; }
+
+        .title-section h2 {
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #fff 30%, #cdabfd 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-teks { color: var(--text-label); }
+
+        /* --- STAT CARDS (Minimalis) --- */
+        .stat-card {
+            border-radius: 16px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-card:hover { 
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+        }
+        .stat-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.7); margin-bottom: 10px; }
+        .stat-value { font-size: 2.2rem; font-weight: 800; margin: 0; }
+
+        /* Gradien baru yang lebih halus */
+        .bg-grad-1 { background: linear-gradient(135deg, #7c4dff, #1c75ff); } 
+        .bg-grad-2 { background: linear-gradient(135deg, #d369ff, #6272ff); } 
+        .bg-grad-3 { background: linear-gradient(135deg, #ff4c8a, #ff9f7d); } 
+        .bg-grad-4 { background: linear-gradient(135deg, #ff9a72, #ff7171); } 
+
+        /* --- MODERN CARD (Penspasian Bersih) --- */
+        .glass-card {
+            background: rgba(26, 26, 46, 0.7); 
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        .glass-card:hover { border-color: rgba(255, 255, 255, 0.08); }
+
+        .section-title { border-left: 4px solid var(--neon-highlight); padding-left: 15px; margin-bottom: 30px; font-weight: 800; }
+
+        /* --- INPUT STYLING (Bersih, Minimalis) --- */
+        .form-label { 
+            font-weight: 500; 
+            color: var(--text-label); 
+            font-size: 0.85rem; 
+            margin-bottom: 10px;
+            margin-left: 2px;
+        }
+
+        .form-control, .form-select {
+            background: rgba(16, 16, 26, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: var(--text-body) !important;
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: none;
+            letter-spacing: -0.2px;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3) !important;
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus {
+            background: rgba(16, 16, 26, 0.9) !important;
+            border-color: rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.05) !important;
+            outline: none;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-core), var(--neon-highlight));
+            border: none;
+            color: white;
+            padding: 20px 0; 
+            border-radius: 14px;
+            font-weight: 700;
+            margin-top: 20px;
+            box-shadow: 0 8px 30px rgba(125, 72, 204, 0.3);
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(125, 72, 204, 0.4);
+            filter: brightness(1.05);
+        }
+
+        .form-switch { margin-bottom: 25px; margin-top: 5px; }
+
+        .inventory-list { max-height: 800px; overflow-y: auto; background: none; border: none; padding: 10px 0; }
+
+        /* MODERN INVENTORY CARDS */
+        .inventory-list .card {
+            background: rgba(26, 26, 46, 0.6) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            transition: transform 0.3s;
+            margin-bottom: 10px;
+        }
+        .inventory-list .card:hover {
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .inventory-list .card h6 { font-size: 0.95rem; }
+        .inventory-list .card small { color: var(--text-label) !important; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-7">
+            <form id="productForm" class="glass-card">
+                <h4 class="section-title">TAMBAH PRODUK BARU (SELLER MODE)</h4>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <label class="form-label">Nama Produk</label>
+                        <input type="text" id="nama" class="form-control" placeholder="Contoh: Kemeja Oversize Pria" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">SKU (Kode Unik)</label>
+                        <input type="text" id="sku" class="form-control" placeholder="ADAT-001">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Harga Jual (Rp)</label>
+                        <input type="number" id="harga" class="form-control price-input" placeholder="0" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Harga Coret (Promo)</label>
+                        <input type="number" id="harga_coret" class="form-control price-input" placeholder="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Stok</label>
+                        <input type="number" id="stok" class="form-control stock-input" placeholder="0" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label">Kategori Produk</label>
+                        <input type="text" id="kategori" class="form-control" placeholder="Ketik kategori produk, cuy" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Brand</label>
+                        <input type="text" id="brand" class="form-control" placeholder="Merk produk">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Berat (Gram)</label>
+                        <input type="number" id="berat_gram" class="form-control" placeholder="Contoh: 500">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">URL Foto Produk (Paste Link Image)</label>
+                    <input type="text" id="image_url" class="form-control" placeholder="https://image-hosting.com/foto.jpg">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Deskripsi Produk</label>
+                    <textarea id="deskripsi" class="form-control" rows="3" placeholder="Jelaskan detail material, ukuran, dll..."></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Data Varian (Format JSON)</label>
+                        <textarea id="varian" class="form-control" rows="2" placeholder='{"warna": ["hitam", "putih"], "size": ["L", "XL"]}'></textarea>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Rating</label>
+                        <input type="number" id="rating_avg" class="form-control" step="0.1" placeholder="4.8">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Ulasan</label>
+                        <input type="number" id="review_count" class="form-control" placeholder="150">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Terjual</label>
+                        <input type="number" id="terjual" class="form-control" placeholder="500">
+                    </div>
+                </div>
+
+                <div class="form-check form-switch mt-2">
+                    <input class="form-check-input" type="checkbox" id="is_active" checked>
+                    <label class="form-check-label">Tampilkan Produk ke Pembeli</label>
+                </div>
+
+                <button type="submit" id="btnUpload" class="btn-primary">UPLOAD KE DATABASE</button>
+            </form>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="glass-card">
+                <div class="d-flex justify-content-between mb-4 mt-2">
+                    <h5 class="fw-bold">Total Barang: <span id="val-total" class="text-info">0</span></h5>
+                    <button class="btn btn-sm btn-outline-light border-0" style="background: rgba(255,255,255,0.05)" onclick="loadData()">Refresh</button>
+                </div>
+                <div id="listBarang" class="inventory-list">
+                    <p class="text-muted">Loading data server...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Konfigurasi Supabase Client (Tetap Dipertahankan)
+    const { createClient } = supabase;
+    const supabaseUrl = 'https://xrlulcclqvxnefohbigf.supabase.co';
+    const supabaseKey = 'sb_publishable_Wc70ySWSpeotdvEDN4UIaQ_VxNzY8J0';
+    const db = createClient(supabaseUrl, supabaseKey);
+
+    // Fungsi narik data dari database (Gaya minimalis baru)
+    async function loadData() {
+        const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
+        if (error) return console.error(error);
+        
+        const listContainer = document.getElementById('listBarang');
+        document.getElementById('val-total').innerText = data.length;
+
+        listContainer.innerHTML = data.length ? '' : '<p class="text-muted">Database kosong.</p>';
+        data.forEach(item => {
+            listContainer.innerHTML += `
+            <div class="card bg-dark mb-2 p-3 border-secondary">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div style="font-size: 0.85rem;">
+                        <div class="fw-bold text-info">${item.sku || 'NO-SKU'}</div>
+                        <div class="text-white">${item.nama}</div>
+                        <div class="text-muted">Rp ${Number(item.harga).toLocaleString()} | Stok: ${item.stok} | Cat: ${item.kategori}</div>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="hapusBarang('${item.id}')">Del</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    // Handle Input Form (Create)
+    document.getElementById('productForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnUpload');
+        btn.innerText = "PROCESSING...";
+        btn.disabled = true;
+
+        const payload = {
+            nama: document.getElementById('nama').value,
+            sku: document.getElementById('sku').value,
+            harga: parseInt(document.getElementById('harga').value),
+            harga_coret: parseInt(document.getElementById('harga_coret').value) || null,
+            stok: parseInt(document.getElementById('stok').value),
+            kategori: document.getElementById('kategori').value, // Ini akan bekerja untuk input teks kustom
+            brand: document.getElementById('brand').value,
+            berat_gram: parseInt(document.getElementById('berat_gram').value) || 0,
+            image_url: document.getElementById('image_url').value,
+            deskripsi: document.getElementById('deskripsi').value,
+            rating_avg: parseFloat(document.getElementById('rating_avg').value) || 0,
+            review_count: parseInt(document.getElementById('review_count').value) || 0,
+            terjual: parseInt(document.getElementById('terjual').value) || 0,
+            is_active: document.getElementById('is_active').checked,
+            varian: document.getElementById('varian').value ? JSON.parse(document.getElementById('varian').value) : null
+        };
+
+        const { error } = await db.from('inventory').insert([payload]);
+        if (error) {
+            alert("Gagal! Cek format JSON varian atau kolom DB: " + error.message);
+        } else {
+            loadData();
+            this.reset();
+        }
+        btn.innerText = "UPLOAD KE DATABASE";
+        btn.disabled = false;
+    });
+
+    // Handle Delete Barang
+    async function hapusBarang(id) {
+        if (confirm("Hapus barang dari database?")) {
+            await db.from('inventory').delete().eq('id', id);
+            loadData();
+        }
+    }
+
+    // Auto-load pas web pertama kebuka
+    loadData();
+</script>
+</body>
+</html>
