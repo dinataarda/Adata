@@ -9,14 +9,13 @@
         /* --- NEON BLUE DARK THEME --- */
         :root {
             --bg-dark: #000000;
-            --bg-light: #080b12; /* Very dark blue tint */
-            --card-bg: #12151e; /* Slightly lighter dark blue-grey */
+            --bg-light: #080b12; 
+            --card-bg: #12151e; 
             --border-color: #2a3143;
-            --accent-core: #0044ff; /* Deep Neon Blue */
-            --neon-highlight: #00bfff; /* Sky/Cyan Highlight */
+            --accent-core: #0044ff; 
+            --neon-highlight: #00bfff; 
             --text-body: rgba(255, 255, 255, 0.9);
             --text-label: rgba(255, 255, 255, 0.5);
-            --danger-color: #ff3366;
         }
 
         body {
@@ -94,7 +93,7 @@
             filter: brightness(1.1); 
             box-shadow: 0 6px 20px rgba(0, 68, 255, 0.5);
         }
-        .btn-primary:disabled { background: #333; box-shadow: none; filter: grayscale(1); }
+        .btn-primary:disabled { background: #333; box-shadow: none; filter: grayscale(1); cursor: not-allowed; }
 
         .form-switch .form-check-input:checked {
             background-color: var(--accent-core);
@@ -105,7 +104,6 @@
         .item-card { background: #0c0f17; border: 1px solid #1a202c; border-radius: 12px; transition: 0.2s; }
         .item-card:hover { border-color: var(--accent-core); box-shadow: 0 0 10px rgba(0, 68, 255, 0.1); }
         
-        /* Scrollbar custom */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -118,7 +116,7 @@
 <div class="container-fluid">
     <div class="title-section text-center text-lg-start mt-3">
         <h2>Adata <span>Dashboard</span></h2>
-        <p class="sub-teks small">Seller Center • Blue Protocol</p>
+        <p class="sub-teks small">Seller Center • Multi-Upload Protocol</p>
     </div>
 
     <div class="row">
@@ -168,8 +166,8 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Foto Produk (Comot Galeri)</label>
-                    <input type="file" id="foto_file" class="form-control" accept="image/*" required>
+                    <label class="form-label">Foto Produk (Pilih Maksimal 5 Foto)</label>
+                    <input type="file" id="foto_file" class="form-control" accept="image/*" multiple required>
                 </div>
 
                 <div class="mb-3">
@@ -215,7 +213,7 @@
     const db = createClient(supabaseUrl, supabaseKey);
 
     async function loadData() {
-        const { data, error } = await db.from('inventory').select('*');
+        const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
         if (error) return alert("Gagal muat data: " + error.message);
         
         const list = document.getElementById('listBarang');
@@ -223,17 +221,31 @@
         list.innerHTML = data.length ? '' : '<p class="text-muted text-center py-4">Kosong, cuy.</p>';
 
         data.forEach(item => {
+            // Logika cerdas buat nampilin thumbnail (ambil foto pertama dari array JSON)
+            let thumbUrl = 'https://via.placeholder.com/55?text=No+Img';
+            let fotoCount = 0;
+            if (Array.isArray(item.image_url) && item.image_url.length > 0) {
+                thumbUrl = item.image_url[0];
+                fotoCount = item.image_url.length;
+            } else if (typeof item.image_url === 'string' && item.image_url.startsWith('http')) {
+                thumbUrl = item.image_url;
+                fotoCount = 1;
+            }
+
             list.innerHTML += `
             <div class="item-card mb-3 p-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="d-flex align-items-center w-100">
-                        <img src="${item.image_url}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 8px; margin-right: 15px; border: 1px solid #2a3143;">
+                        <div style="position: relative; margin-right: 15px;">
+                            <img src="${thumbUrl}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 8px; border: 1px solid #2a3143;">
+                            <span class="badge bg-dark" style="position: absolute; bottom: -5px; right: -5px; font-size: 0.6rem; border: 1px solid var(--accent-core);">${fotoCount} pic</span>
+                        </div>
                         <div class="w-100">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <span class="badge" style="background: rgba(0, 191, 255, 0.1); color: #00bfff; border: 1px solid rgba(0, 191, 255, 0.3); font-weight: 600; letter-spacing: 0.5px;">
                                     ${item.sku || 'NO-SKU'}
                                 </span>
-                                <button class="btn btn-sm" style="background: rgba(255, 51, 102, 0.1); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.3); border-radius: 6px; font-weight: 600; font-size: 0.75rem; padding: 4px 10px;" onclick="hapusBarang('${item.id}', '${item.image_url}')">Hapus</button>
+                                <button class="btn btn-sm" style="background: rgba(255, 51, 102, 0.1); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.3); border-radius: 6px; font-weight: 600; font-size: 0.75rem; padding: 4px 10px;" onclick="hapusBarang('${item.id}')">Hapus</button>
                             </div>
                             <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">${item.nama}</div>
                             <div class="d-flex justify-content-between align-items-center">
@@ -251,29 +263,36 @@
         e.preventDefault();
         const btn = document.getElementById('btnUpload');
         const fileInput = document.getElementById('foto_file');
-        const file = fileInput.files[0];
+        const files = fileInput.files;
 
-        if (!file) return alert("Pilih foto dulu, Boss!");
+        if (files.length === 0) return alert("Pilih foto dulu, Boss!");
+        if (files.length > 5) return alert("Maksimal 5 foto aja biar loading-nya nggak berat!");
 
-        btn.innerText = "UPLOADING PHOTO...";
+        btn.innerText = `UPLOADING ${files.length} FOTO...`;
         btn.disabled = true;
 
-        // 1. Upload ke Storage
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await db.storage.from('foto-produk').upload(fileName, file);
+        let uploadedUrls = [];
 
-        if (uploadError) {
-            btn.innerText = "Sikat ke Database";
-            btn.disabled = false;
-            return alert("Gagal upload foto: " + uploadError.message);
+        // Looping upload semua foto yang dipilih ke Storage
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `PROD_${Date.now()}_${i}.${fileExt}`;
+            
+            const { error: uploadError } = await db.storage.from('foto-produk').upload(fileName, file);
+            
+            if (uploadError) {
+                btn.innerText = "Sikat ke Database";
+                btn.disabled = false;
+                return alert(`Gagal upload foto ke-${i+1}: ` + uploadError.message);
+            }
+
+            // Ambil URL publiknya
+            const { data: publicUrlData } = db.storage.from('foto-produk').getPublicUrl(fileName);
+            uploadedUrls.push(publicUrlData.publicUrl);
         }
 
-        // 2. Ambil Public URL
-        const { data: publicUrlData } = db.storage.from('foto-produk').getPublicUrl(fileName);
-        const image_url = publicUrlData.publicUrl;
-
-        // 3. Simpan ke Database
+        // Simpan data + Array URL gambar ke Database
         const payload = {
             nama: document.getElementById('nama').value,
             sku: document.getElementById('sku').value,
@@ -283,7 +302,7 @@
             kategori: document.getElementById('kategori').value,
             brand: document.getElementById('brand').value,
             berat_gram: parseInt(document.getElementById('berat_gram').value) || 0,
-            image_url: image_url,
+            image_url: uploadedUrls, // Ini sekarang dikirim sebagai Array JSON
             deskripsi: document.getElementById('deskripsi').value,
             rating_avg: parseFloat(document.getElementById('rating_avg').value) || 4.8,
             review_count: parseInt(document.getElementById('review_count').value) || 0,
@@ -304,14 +323,12 @@
         btn.disabled = false;
     });
 
-    async function hapusBarang(id, imageUrl) {
+    async function hapusBarang(id) {
         if (!confirm("Yakin mau hapus barang ini?")) return;
         
-        // Hapus Database
         const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
         if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
-        // Refresh List
         loadData();
     }
 
