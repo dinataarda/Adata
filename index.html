@@ -3,52 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Center - Adata Dashboard (Volcanic Dark)</title>
+    <title>Seller Center - Adata Dashboard (Neon Blue Edition)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* --- VOLCANIC DARK THEME --- */
+        /* --- NEON BLUE DARK THEME --- */
         :root {
             --bg-dark: #000000;
-            --bg-light: #121212;
-            --card-bg: #1e1e1e;
-            --border-color: #333333;
-            --accent-core: #ff3d00; /* Orange Red */
-            --neon-highlight: #ff6e40;
+            --bg-light: #080b12; /* Very dark blue tint */
+            --card-bg: #12151e; /* Slightly lighter dark blue-grey */
+            --border-color: #2a3143;
+            --accent-core: #0044ff; /* Deep Neon Blue */
+            --neon-highlight: #00bfff; /* Sky/Cyan Highlight */
             --text-body: rgba(255, 255, 255, 0.9);
             --text-label: rgba(255, 255, 255, 0.5);
-            --text-muted: #888888;
+            --danger-color: #ff3366;
         }
 
         body {
-            background: var(--bg-light);
             background: radial-gradient(circle at top center, var(--bg-light), var(--bg-dark) 100%);
             color: var(--text-body);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
-            padding: 30px;
+            padding: 20px;
             letter-spacing: -0.2px;
         }
 
-        h2, h4, h5, h6 { font-weight: 600; }
+        .title-section h2 { font-weight: 800; letter-spacing: -1.5px; color: #fff; }
+        .title-section h2 span { color: var(--neon-highlight); text-shadow: 0 0 15px rgba(0, 191, 255, 0.4); }
+        .sub-teks { color: var(--text-label); margin-bottom: 30px; }
 
-        .title-section h2 {
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            color: #ffffff;
-        }
-
-        .title-section h2 span {
-            color: var(--accent-core);
-        }
-
-        .sub-teks { color: var(--text-label); }
-
-        /* Flat Dark Card */
         .glass-card {
             background: var(--card-bg); 
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 40px; 
+            padding: 30px; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             margin-bottom: 20px;
         }
@@ -56,40 +44,33 @@
         .section-title { 
             border-left: 4px solid var(--accent-core); 
             padding-left: 15px; 
-            margin-bottom: 30px; 
+            margin-bottom: 25px; 
             font-weight: 800; 
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-size: 1.1rem;
         }
 
         .form-label { 
             font-weight: 600; 
             color: var(--text-label); 
-            font-size: 0.8rem; 
+            font-size: 0.75rem; 
             text-transform: uppercase;
-            letter-spacing: 1px;
             margin-bottom: 8px;
-            margin-left: 2px;
         }
 
-        .form-control, .form-select {
-            background: #0a0a0a !important;
+        .form-control {
+            background: #05070a !important;
             border: 1px solid var(--border-color) !important;
             color: var(--text-body) !important;
             border-radius: 8px;
-            padding: 14px 18px;
-            transition: all 0.2s ease-in-out;
-            box-shadow: none;
-        }
-
-        .form-control::placeholder {
-            color: var(--text-muted) !important;
-            font-size: 0.9rem;
+            padding: 12px 15px;
+            transition: 0.2s;
         }
 
         .form-control:focus {
-            border-color: var(--accent-core) !important;
-            box-shadow: 0 0 0 2px rgba(255, 61, 0, 0.2) !important;
+            border-color: var(--neon-highlight) !important;
+            box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.2) !important;
             outline: none;
         }
 
@@ -97,192 +78,202 @@
             background: linear-gradient(135deg, var(--accent-core), var(--neon-highlight));
             border: none;
             color: white;
-            padding: 18px 0; 
+            padding: 16px; 
             border-radius: 8px;
             font-weight: 800;
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
-            transition: all 0.2s;
+            margin-top: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
             width: 100%;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 68, 255, 0.3);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 61, 0, 0.5);
-            filter: brightness(1.1);
+        .btn-primary:hover { 
+            transform: translateY(-2px); 
+            filter: brightness(1.1); 
+            box-shadow: 0 6px 20px rgba(0, 68, 255, 0.5);
         }
+        .btn-primary:disabled { background: #333; box-shadow: none; filter: grayscale(1); }
 
-        .form-switch { margin-bottom: 25px; margin-top: 5px; }
-        .form-check-input:checked {
+        .form-switch .form-check-input:checked {
             background-color: var(--accent-core);
             border-color: var(--accent-core);
         }
 
-        .inventory-list { max-height: 800px; overflow-y: auto; background: none; border: none; padding: 10px 0; }
-
+        .inventory-list { max-height: 800px; overflow-y: auto; }
+        .item-card { background: #0c0f17; border: 1px solid #1a202c; border-radius: 12px; transition: 0.2s; }
+        .item-card:hover { border-color: var(--accent-core); box-shadow: 0 0 10px rgba(0, 68, 255, 0.1); }
+        
+        /* Scrollbar custom */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-core); }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-<div class="container-fluid py-4">
-    <div class="title-section mb-4 text-center text-lg-start">
+<div class="container-fluid">
+    <div class="title-section text-center text-lg-start mt-3">
         <h2>Adata <span>Dashboard</span></h2>
-        <p class="sub-teks">Seller Center Control Panel.</p>
+        <p class="sub-teks small">Seller Center • Blue Protocol</p>
     </div>
 
     <div class="row">
         <div class="col-lg-7">
             <form id="productForm" class="glass-card">
-                <h5 class="section-title">Tambah Produk</h5>
+                <h5 class="section-title">Upload Produk Baru</h5>
                 
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-8 mb-3">
                         <label class="form-label">Nama Produk</label>
-                        <input type="text" id="nama" class="form-control" placeholder="Contoh: Kemeja Oversize Pria" required>
+                        <input type="text" id="nama" class="form-control" placeholder="Contoh: Kemeja Oversize" required>
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label">SKU (Kode Unik)</label>
-                        <input type="text" id="sku" class="form-control" placeholder="ADAT-001">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">SKU</label>
+                        <input type="text" id="sku" class="form-control" placeholder="ADT-001">
                     </div>
                 </div>
 
-                <div class="row mt-3">
-                    <div class="col-md-4">
-                        <label class="form-label">Harga Jual (Rp)</label>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Harga Jual</label>
                         <input type="number" id="harga" class="form-control" placeholder="0" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Harga Coret</label>
                         <input type="number" id="harga_coret" class="form-control" placeholder="0">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Stok</label>
                         <input type="number" id="stok" class="form-control" placeholder="0" required>
                     </div>
                 </div>
 
-                <div class="row mt-3">
-                    <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Kategori</label>
                         <input type="text" id="kategori" class="form-control" placeholder="Ketik kategori" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Brand</label>
-                        <input type="text" id="brand" class="form-control" placeholder="Merk produk">
+                        <input type="text" id="brand" class="form-control" placeholder="Merk">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <label class="form-label">Berat (Gr)</label>
-                        <input type="number" id="berat_gram" class="form-control" placeholder="Contoh: 500">
+                        <input type="number" id="berat_gram" class="form-control" placeholder="500">
                     </div>
                 </div>
 
-                <div class="mt-3">
-                    <label class="form-label">URL Foto Produk</label>
-                    <input type="text" id="image_url" class="form-control" placeholder="https://image-hosting.com/foto.jpg">
+                <div class="mb-3">
+                    <label class="form-label">Foto Produk (Comot Galeri)</label>
+                    <input type="file" id="foto_file" class="form-control" accept="image/*" required>
                 </div>
 
-                <div class="mt-3">
+                <div class="mb-3">
                     <label class="form-label">Deskripsi</label>
-                    <textarea id="deskripsi" class="form-control" rows="3" placeholder="Jelaskan detail material, ukuran, dll..."></textarea>
+                    <textarea id="deskripsi" class="form-control" rows="2" placeholder="Detail produk..."></textarea>
                 </div>
 
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Data Varian (JSON)</label>
-                        <textarea id="varian" class="form-control" rows="2" placeholder='{"warna": ["hitam"], "size": ["L"]}'></textarea>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Varian (JSON)</label>
+                        <textarea id="varian" class="form-control" rows="1" placeholder='{"warna": ["hitam"]}'></textarea>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Rating</label>
-                        <input type="number" id="rating_avg" class="form-control" step="0.1" placeholder="4.8">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Ulasan</label>
-                        <input type="number" id="review_count" class="form-control" placeholder="150">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Terjual</label>
-                        <input type="number" id="terjual" class="form-control" placeholder="500">
-                    </div>
+                    <div class="col-md-2 mb-3"> <label class="form-label">Rating</label> <input type="number" id="rating_avg" class="form-control" step="0.1" value="4.8"> </div>
+                    <div class="col-md-2 mb-3"> <label class="form-label">Ulasan</label> <input type="number" id="review_count" class="form-control" value="0"> </div>
+                    <div class="col-md-2 mb-3"> <label class="form-label">Terjual</label> <input type="number" id="terjual" class="form-control" value="0"> </div>
                 </div>
 
-                <div class="form-check form-switch mt-4">
+                <div class="form-check form-switch mt-2">
                     <input class="form-check-input" type="checkbox" id="is_active" checked>
-                    <label class="form-check-label text-white" style="font-size: 0.9rem;">Tampilkan Produk ke Pembeli</label>
+                    <label class="form-check-label text-white" style="font-size: 0.85rem;">Tampilkan Produk ke Pembeli</label>
                 </div>
 
-                <button type="submit" id="btnUpload" class="btn-primary">Upload ke Database</button>
+                <button type="submit" id="btnUpload" class="btn-primary">Sikat ke Database</button>
             </form>
         </div>
 
         <div class="col-lg-5">
             <div class="glass-card">
-                <div class="d-flex justify-content-between mb-4">
-                    <h5 class="fw-bold m-0" style="color: var(--accent-core);">Total Barang: <span id="val-total" class="text-white">0</span></h5>
-                    <button class="btn btn-sm btn-outline-light border-1" style="border-color: var(--border-color); color: var(--text-label);" onclick="loadData()">Refresh</button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="fw-bold m-0" style="color: var(--neon-highlight);">Live Inventory (<span id="val-total">0</span>)</h6>
+                    <button class="btn btn-sm btn-outline-secondary border-0" onclick="loadData()">Refresh</button>
                 </div>
-                <div id="listBarang" class="inventory-list">
-                    <p class="text-muted">Loading data server...</p>
-                </div>
+                <div id="listBarang" class="inventory-list"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Konfigurasi Supabase Client
     const { createClient } = supabase;
     const supabaseUrl = 'https://xrlulcclqvxnefohbigf.supabase.co';
     const supabaseKey = 'sb_publishable_Wc70ySWSpeotdvEDN4UIaQ_VxNzY8J0';
     const db = createClient(supabaseUrl, supabaseKey);
 
-    // Fungsi narik data (SAFE MODE)
     async function loadData() {
         const { data, error } = await db.from('inventory').select('*');
+        if (error) return alert("Gagal muat data: " + error.message);
         
-        if (error) {
-            alert("GAGAL NARIK DATA SERVER: " + error.message);
-            return console.error(error);
-        }
-        
-        const listContainer = document.getElementById('listBarang');
+        const list = document.getElementById('listBarang');
         document.getElementById('val-total').innerText = data.length;
+        list.innerHTML = data.length ? '' : '<p class="text-muted text-center py-4">Kosong, cuy.</p>';
 
-        listContainer.innerHTML = data.length ? '' : '<p class="text-muted">Database kosong.</p>';
-        
-        // Render List Barang dengan Desain Flat Dark & Orange Accent
         data.forEach(item => {
-            listContainer.innerHTML += `
-            <div class="card mb-3 p-3" style="background: #141414; border: 1px solid #333; border-radius: 10px;">
+            list.innerHTML += `
+            <div class="item-card mb-3 p-3">
                 <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <span class="badge mb-2" style="background: rgba(255, 61, 0, 0.1); color: #ff6e40; border: 1px solid rgba(255, 61, 0, 0.3); font-weight: 600; letter-spacing: 0.5px;">
-                            ${item.sku || 'NO-SKU'}
-                        </span>
-                        <h6 class="text-white fw-bold mb-1" style="font-size: 1.05rem;">${item.nama}</h6>
-                        <div style="color: #888; font-size: 0.85rem; margin-top: 6px;">
-                            <span style="color: #ff6e40; font-weight: 700; font-size: 0.95rem;">Rp ${Number(item.harga).toLocaleString('id-ID')}</span> 
-                            <br>
-                            <span class="mt-1 d-inline-block">Stok: <span class="text-white">${item.stok}</span> <span class="mx-1">•</span> Kategori: <span class="text-white">${item.kategori}</span></span>
+                    <div class="d-flex align-items-center w-100">
+                        <img src="${item.image_url}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 8px; margin-right: 15px; border: 1px solid #2a3143;">
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge" style="background: rgba(0, 191, 255, 0.1); color: #00bfff; border: 1px solid rgba(0, 191, 255, 0.3); font-weight: 600; letter-spacing: 0.5px;">
+                                    ${item.sku || 'NO-SKU'}
+                                </span>
+                                <button class="btn btn-sm" style="background: rgba(255, 51, 102, 0.1); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.3); border-radius: 6px; font-weight: 600; font-size: 0.75rem; padding: 4px 10px;" onclick="hapusBarang('${item.id}', '${item.image_url}')">Hapus</button>
+                            </div>
+                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">${item.nama}</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div style="color: var(--neon-highlight); font-size: 0.9rem; font-weight: 700;">Rp ${Number(item.harga).toLocaleString('id-ID')}</div>
+                                <div style="color: #6c757d; font-size: 0.75rem;">Stok: <span class="text-white">${item.stok}</span></div>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-sm" style="background: #2a0a0a; color: #ff4444; border: 1px solid #551111; border-radius: 6px; font-weight: 600; padding: 4px 10px; transition: 0.2s;" onclick="hapusBarang('${item.id}')" onmouseover="this.style.background='#441111'" onmouseout="this.style.background='#2a0a0a'">
-                        Hapus
-                    </button>
                 </div>
             </div>`;
         });
     }
 
-    // Handle Input Form (Create)
     document.getElementById('productForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnUpload');
-        btn.innerText = "PROCESSING...";
+        const fileInput = document.getElementById('foto_file');
+        const file = fileInput.files[0];
+
+        if (!file) return alert("Pilih foto dulu, Boss!");
+
+        btn.innerText = "UPLOADING PHOTO...";
         btn.disabled = true;
 
+        // 1. Upload ke Storage
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await db.storage.from('foto-produk').upload(fileName, file);
+
+        if (uploadError) {
+            btn.innerText = "Sikat ke Database";
+            btn.disabled = false;
+            return alert("Gagal upload foto: " + uploadError.message);
+        }
+
+        // 2. Ambil Public URL
+        const { data: publicUrlData } = db.storage.from('foto-produk').getPublicUrl(fileName);
+        const image_url = publicUrlData.publicUrl;
+
+        // 3. Simpan ke Database
         const payload = {
             nama: document.getElementById('nama').value,
             sku: document.getElementById('sku').value,
@@ -292,44 +283,38 @@
             kategori: document.getElementById('kategori').value,
             brand: document.getElementById('brand').value,
             berat_gram: parseInt(document.getElementById('berat_gram').value) || 0,
-            image_url: document.getElementById('image_url').value,
+            image_url: image_url,
             deskripsi: document.getElementById('deskripsi').value,
-            rating_avg: parseFloat(document.getElementById('rating_avg').value) || 0,
+            rating_avg: parseFloat(document.getElementById('rating_avg').value) || 4.8,
             review_count: parseInt(document.getElementById('review_count').value) || 0,
             terjual: parseInt(document.getElementById('terjual').value) || 0,
             is_active: document.getElementById('is_active').checked,
             varian: document.getElementById('varian').value ? JSON.parse(document.getElementById('varian').value) : null
         };
 
-        const { error } = await db.from('inventory').insert([payload]);
-        if (error) {
-            alert("GAGAL UPLOAD: " + error.message);
+        const { error: dbError } = await db.from('inventory').insert([payload]);
+        if (dbError) {
+            alert("Database Error: " + dbError.message);
         } else {
             loadData();
             this.reset();
         }
-        btn.innerText = "UPLOAD KE DATABASE";
+
+        btn.innerText = "Sikat ke Database";
         btn.disabled = false;
     });
 
-    // Handle Delete Barang
-    async function hapusBarang(id) {
-        if (!id || id === 'undefined') {
-            alert("Error: ID barang tidak ditemukan.");
-            return;
-        }
+    async function hapusBarang(id, imageUrl) {
+        if (!confirm("Yakin mau hapus barang ini?")) return;
+        
+        // Hapus Database
+        const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
+        if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
-        if (confirm("Hapus barang dari database?")) {
-            const { error } = await db.from('inventory').delete().eq('id', id);
-            if (error) {
-                alert("GAGAL HAPUS: " + error.message);
-            } else {
-                loadData();
-            }
-        }
+        // Refresh List
+        loadData();
     }
 
-    // Auto-load pas web pertama kebuka
     loadData();
 </script>
 </body>
