@@ -273,13 +273,13 @@
 
         let uploadedUrls = [];
 
-        // Upload loop
+        // Upload loop (SUDAH DIREVISI JADI foto_produk)
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileExt = file.name.split('.').pop();
             const fileName = `PROD_${Date.now()}_${i}.${fileExt}`;
             
-            const { error: uploadError } = await db.storage.from('foto-produk').upload(fileName, file);
+            const { error: uploadError } = await db.storage.from('foto_produk').upload(fileName, file);
             
             if (uploadError) {
                 btn.innerText = "Sikat ke Database";
@@ -287,7 +287,7 @@
                 return alert(`Gagal upload foto ke-${i+1}: ` + uploadError.message);
             }
 
-            const { data: publicUrlData } = db.storage.from('foto-produk').getPublicUrl(fileName);
+            const { data: publicUrlData } = db.storage.from('foto_produk').getPublicUrl(fileName);
             uploadedUrls.push(publicUrlData.publicUrl);
         }
 
@@ -332,14 +332,14 @@
         const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
         if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
-        // 3. Mesin Pembersih: Ekstrak dan hapus file fisik dari Storage Supabase
+        // 3. Mesin Pembersih: Ekstrak dan hapus file fisik dari Storage Supabase (SUDAH DIREVISI JADI foto_produk)
         if (itemData && itemData.image_url) {
             let urls = Array.isArray(itemData.image_url) ? itemData.image_url : [itemData.image_url];
             
             for (let url of urls) {
-                if (typeof url === 'string' && url.includes('foto-produk')) {
+                if (typeof url === 'string' && url.includes('foto_produk')) {
                     let fileName = url.split('/').pop();
-                    await db.storage.from('foto-produk').remove([fileName]);
+                    await db.storage.from('foto_produk').remove([fileName]);
                 }
             }
         }
