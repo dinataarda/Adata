@@ -213,7 +213,6 @@
     const db = createClient(supabaseUrl, supabaseKey);
 
     async function loadData() {
-        // Data diurutkan dari yang paling baru diupload berkat kolom created_at yang udah bener
         const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
         if (error) return alert("Gagal muat data: " + error.message);
         
@@ -222,7 +221,6 @@
         list.innerHTML = data.length ? '' : '<p class="text-muted text-center py-4">Kosong, cuy.</p>';
 
         data.forEach(item => {
-            // Ambil thumbnail dari array gambar pertama
             let thumbUrl = 'https://via.placeholder.com/55?text=No+Img';
             let fotoCount = 0;
             if (Array.isArray(item.image_url) && item.image_url.length > 0) {
@@ -272,9 +270,23 @@
         btn.innerText = `UPLOADING ${files.length} FOTO...`;
         btn.disabled = true;
 
+        // --- SISTEM ANTI-TYPO JSON (FIX DARI MASALAH LO) ---
+        let parsedVarian = null;
+        let inputVarian = document.getElementById('varian').value.trim(); // .trim() ngebuang spasi kosong
+        
+        if (inputVarian) {
+            try {
+                parsedVarian = JSON.parse(inputVarian);
+            } catch (err) {
+                btn.innerText = "Sikat ke Database";
+                btn.disabled = false;
+                return alert("Penulisan Varian (JSON) salah! Cek lagi tanda kutip atau kurungnya. Kalau nggak mau pake varian, KOSONGIN AJA KOTAKNYA (hapus semua spasi).");
+            }
+        }
+        // ---------------------------------------------------
+
         let uploadedUrls = [];
 
-        // Upload loop menggunakan bucket foto_produk
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileExt = file.name.split('.').pop();
@@ -292,7 +304,6 @@
             uploadedUrls.push(publicUrlData.publicUrl);
         }
 
-        // Insert to DB
         const payload = {
             nama: document.getElementById('nama').value,
             sku: document.getElementById('sku').value,
@@ -308,7 +319,7 @@
             review_count: parseInt(document.getElementById('review_count').value) || 0,
             terjual: parseInt(document.getElementById('terjual').value) || 0,
             is_active: document.getElementById('is_active').checked,
-            varian: document.getElementById('varian').value ? JSON.parse(document.getElementById('varian').value) : null
+            varian: parsedVarian // Masukin hasil JSON yang udah divalidasi
         };
 
         const { error: dbError } = await db.from('inventory').insert([payload]);
@@ -326,17 +337,12 @@
     async function hapusBarang(id) {
         if (!confirm("Yakin mau hapus barang ini?")) return;
 
-        // 1. Ambil data URL foto dulu sebelum row di DB dihapus
         const { data: itemData } = await db.from('inventory').select('image_url').eq('id', id).single();
-
-        // 2. Hapus data di tabel Database
         const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
         if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
-        // 3. Mesin Pembersih: Ekstrak dan hapus file fisik dari Storage Supabase
         if (itemData && itemData.image_url) {
             let urls = Array.isArray(itemData.image_url) ? itemData.image_url : [itemData.image_url];
-            
             for (let url of urls) {
                 if (typeof url === 'string' && url.includes('foto_produk')) {
                     let fileName = url.split('/').pop();
@@ -345,7 +351,6 @@
             }
         }
 
-        // 4. Refresh tampilan
         loadData();
     }
 
