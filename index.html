@@ -213,6 +213,7 @@
     const db = createClient(supabaseUrl, supabaseKey);
 
     async function loadData() {
+        // Data diurutkan dari yang paling baru diupload berkat kolom created_at yang udah bener
         const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
         if (error) return alert("Gagal muat data: " + error.message);
         
@@ -273,7 +274,7 @@
 
         let uploadedUrls = [];
 
-        // Upload loop (SUDAH DIREVISI JADI foto_produk)
+        // Upload loop menggunakan bucket foto_produk
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileExt = file.name.split('.').pop();
@@ -332,7 +333,7 @@
         const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
         if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
-        // 3. Mesin Pembersih: Ekstrak dan hapus file fisik dari Storage Supabase (SUDAH DIREVISI JADI foto_produk)
+        // 3. Mesin Pembersih: Ekstrak dan hapus file fisik dari Storage Supabase
         if (itemData && itemData.image_url) {
             let urls = Array.isArray(itemData.image_url) ? itemData.image_url : [itemData.image_url];
             
