@@ -109,7 +109,7 @@
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-core); }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
@@ -178,9 +178,10 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Varian (JSON)</label>
-                        <textarea id="varian" class="form-control" rows="1" placeholder='{"warna": ["hitam"]}'></textarea>
+                        <textarea id="varian" class="form-control" rows="1" placeholder='["Hitam", "Putih", "M", "L"]'></textarea>
+                        <small class="text-muted" style="font-size: 0.65rem;">Kosongin aja kalau gak ada varian.</small>
                     </div>
-                    <div class="col-md-2 mb-3"> <label class="form-label">Rating</label> <input type="number" id="rating_avg" class="form-control" step="0.1" value="4.8"> </div>
+                    <div class="col-md-2 mb-3"> <label class="form-label">Rating</label> <input type="number" id="rating_avg" class="form-control" step="0.1" value="5.0"> </div>
                     <div class="col-md-2 mb-3"> <label class="form-label">Ulasan</label> <input type="number" id="review_count" class="form-control" value="0"> </div>
                     <div class="col-md-2 mb-3"> <label class="form-label">Terjual</label> <input type="number" id="terjual" class="form-control" value="0"> </div>
                 </div>
@@ -207,29 +208,42 @@
 </div>
 
 <script>
+    // 1. INIT SUPABASE DENGAN KEY ASLI LO
     const { createClient } = supabase;
     const supabaseUrl = 'https://xrlulcclqvxnefohbigf.supabase.co';
-    const supabaseKey = 'sb_publishable_Wc70ySWSpeotdvEDN4UIaQ_VxNzY8J0';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhybHVsY2NscXZ4bmVmb2hiaWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwNzQxMjgsImV4cCI6MjA5MzY1MDEyOH0.pa4U8fmC5I1DsWUpIGGA1gWiPXhxht76EWbRYsNxXS8';
     const db = createClient(supabaseUrl, supabaseKey);
 
+    // 2. LOAD DATA DARI DATABASE
     async function loadData() {
-        const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
-        if (error) return alert("Gagal muat data: " + error.message);
-        
         const list = document.getElementById('listBarang');
+        list.innerHTML = '<p class="text-muted text-center py-4">Loading data...</p>';
+
+        const { data, error } = await db.from('inventory').select('*').order('created_at', { ascending: false });
+        
+        if (error) {
+            console.error(error);
+            return alert("Gagal muat data! Cek apakah RLS tabel 'inventory' udah lo open (Enable read access).");
+        }
+        
         document.getElementById('val-total').innerText = data.length;
         list.innerHTML = data.length ? '' : '<p class="text-muted text-center py-4">Kosong, cuy.</p>';
 
         data.forEach(item => {
             let thumbUrl = 'https://via.placeholder.com/55?text=No+Img';
             let fotoCount = 0;
-            if (Array.isArray(item.image_url) && item.image_url.length > 0) {
-                thumbUrl = item.image_url[0];
-                fotoCount = item.image_url.length;
-            } else if (typeof item.image_url === 'string' && item.image_url.startsWith('http')) {
-                thumbUrl = item.image_url;
-                fotoCount = 1;
-            }
+            
+            // Logic baca gambar yg aman (bisa JSON string atau Array)
+            try {
+                let imgData = typeof item.image_url === 'string' ? JSON.parse(item.image_url) : item.image_url;
+                if (Array.isArray(imgData) && imgData.length > 0) {
+                    thumbUrl = imgData[0];
+                    fotoCount = imgData.length;
+                } else if (typeof item.image_url === 'string' && item.image_url.startsWith('http')) {
+                    thumbUrl = item.image_url;
+                    fotoCount = 1;
+                }
+            } catch(e) {}
 
             list.innerHTML += `
             <div class="item-card mb-3 p-3">
@@ -246,7 +260,9 @@
                                 </span>
                                 <button class="btn btn-sm" style="background: rgba(255, 51, 102, 0.1); color: #ff3366; border: 1px solid rgba(255, 51, 102, 0.3); border-radius: 6px; font-weight: 600; font-size: 0.75rem; padding: 4px 10px;" onclick="hapusBarang('${item.id}')">Hapus</button>
                             </div>
-                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">${item.nama}</div>
+                            <div class="fw-bold text-white mb-1" style="font-size: 0.95rem;">
+                                ${item.nama} ${!item.is_active ? '<span style="color:red; font-size:0.7rem;">(Hidden)</span>' : ''}
+                            </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div style="color: var(--neon-highlight); font-size: 0.9rem; font-weight: 700;">Rp ${Number(item.harga).toLocaleString('id-ID')}</div>
                                 <div style="color: #6c757d; font-size: 0.75rem;">Stok: <span class="text-white">${item.stok}</span></div>
@@ -258,6 +274,7 @@
         });
     }
 
+    // 3. LOGIC UPLOAD KE DATABASE & STORAGE
     document.getElementById('productForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnUpload');
@@ -270,9 +287,9 @@
         btn.innerText = `UPLOADING ${files.length} FOTO...`;
         btn.disabled = true;
 
-        // --- SISTEM ANTI-TYPO JSON (FIX DARI MASALAH LO) ---
+        // Anti-typo Varian (JSON)
         let parsedVarian = null;
-        let inputVarian = document.getElementById('varian').value.trim(); // .trim() ngebuang spasi kosong
+        let inputVarian = document.getElementById('varian').value.trim();
         
         if (inputVarian) {
             try {
@@ -280,13 +297,13 @@
             } catch (err) {
                 btn.innerText = "Sikat ke Database";
                 btn.disabled = false;
-                return alert("Penulisan Varian (JSON) salah! Cek lagi tanda kutip atau kurungnya. Kalau nggak mau pake varian, KOSONGIN AJA KOTAKNYA (hapus semua spasi).");
+                return alert("Penulisan Varian (JSON) lo salah format. Pastiin pakai tanda kutip dan kurung siku, contoh: [\"Hitam\", \"Putih\"]");
             }
         }
-        // ---------------------------------------------------
 
         let uploadedUrls = [];
 
+        // Upload loop multi-file
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const fileExt = file.name.split('.').pop();
@@ -295,15 +312,17 @@
             const { error: uploadError } = await db.storage.from('foto_produk').upload(fileName, file);
             
             if (uploadError) {
+                console.error(uploadError);
                 btn.innerText = "Sikat ke Database";
                 btn.disabled = false;
-                return alert(`Gagal upload foto ke-${i+1}: ` + uploadError.message);
+                return alert(`Gagal upload foto ke-${i+1}. Pastikan RLS Storage folder 'foto_produk' udah diizinkan (Public/Insert).`);
             }
 
             const { data: publicUrlData } = db.storage.from('foto_produk').getPublicUrl(fileName);
             uploadedUrls.push(publicUrlData.publicUrl);
         }
 
+        // Siapin payload gabungan
         const payload = {
             nama: document.getElementById('nama').value,
             sku: document.getElementById('sku').value,
@@ -315,45 +334,57 @@
             berat_gram: parseInt(document.getElementById('berat_gram').value) || 0,
             image_url: uploadedUrls, 
             deskripsi: document.getElementById('deskripsi').value,
-            rating_avg: parseFloat(document.getElementById('rating_avg').value) || 4.8,
+            rating_avg: parseFloat(document.getElementById('rating_avg').value) || 5.0,
             review_count: parseInt(document.getElementById('review_count').value) || 0,
             terjual: parseInt(document.getElementById('terjual').value) || 0,
             is_active: document.getElementById('is_active').checked,
-            varian: parsedVarian // Masukin hasil JSON yang udah divalidasi
+            varian: parsedVarian
         };
 
         const { error: dbError } = await db.from('inventory').insert([payload]);
+        
         if (dbError) {
-            alert("Database Error: " + dbError.message);
+            console.error(dbError);
+            alert("Database Error: " + dbError.message + "\nPastiin tipe data image_url dan varian itu JSONB.");
         } else {
             loadData();
             this.reset();
+            alert("Barang berhasil masuk etalase!");
         }
 
         btn.innerText = "Sikat ke Database";
         btn.disabled = false;
     });
 
+    // 4. LOGIC HAPUS DATA (DB + STORAGE)
     async function hapusBarang(id) {
-        if (!confirm("Yakin mau hapus barang ini?")) return;
+        if (!confirm("Yakin mau hapus barang ini selamanya?")) return;
 
+        // Ambil info foto buat dihapus
         const { data: itemData } = await db.from('inventory').select('image_url').eq('id', id).single();
+        
+        // Hapus dari DB
         const { error: dbErr } = await db.from('inventory').delete().eq('id', id);
         if (dbErr) return alert("Gagal hapus DB: " + dbErr.message);
 
+        // Hapus foto dari Storage
         if (itemData && itemData.image_url) {
-            let urls = Array.isArray(itemData.image_url) ? itemData.image_url : [itemData.image_url];
-            for (let url of urls) {
-                if (typeof url === 'string' && url.includes('foto_produk')) {
-                    let fileName = url.split('/').pop();
-                    await db.storage.from('foto_produk').remove([fileName]);
+            try {
+                let imgData = typeof itemData.image_url === 'string' ? JSON.parse(itemData.image_url) : itemData.image_url;
+                let urls = Array.isArray(imgData) ? imgData : [imgData];
+                for (let url of urls) {
+                    if (typeof url === 'string' && url.includes('foto_produk')) {
+                        let fileName = url.split('/').pop();
+                        await db.storage.from('foto_produk').remove([fileName]);
+                    }
                 }
-            }
+            } catch(e) { console.error("Gagal hapus gambar di storage", e); }
         }
 
         loadData();
     }
 
+    // Eksekusi jalanin panel
     loadData();
 </script>
 </body>
